@@ -55,7 +55,7 @@
 - [x] 프로젝트 초기 설정 (Next.js + Tailwind)
 - [x] 기본 UI 구현 (Check-in, 3-Step Output)
 - [x] Hybrid Engine 목업 구현
-- [ ] AI 페르소나(GPT-4o/Gemini) 실시간 연동
+- [x] AI 페르소나(GPT-4o/Gemini) 실시간 연동
 - [ ] Supabase 데이터베이스 연동
 - [ ] Web3 지갑 연결 및 SBT 스마트 컨트랙트 개발
 

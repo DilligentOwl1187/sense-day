@@ -1,21 +1,43 @@
 import { Destiny_Identity, DailyInsight, ZodiacSign, ElementType } from '@/types/destiny';
 
-// Mock data generation for MVP
+// Real implementation calling the API
 export const generateDailyInsight = async (identity: Destiny_Identity, feeling: string): Promise<DailyInsight> => {
-    // In a real implementation, this would call the Gemini API with context from astrology/saju
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: feeling,
+                identity: identity
+            }),
+        });
 
-    // Simulation delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
 
-    const insights: DailyInsight = {
-        date: new Date().toISOString().split('T')[0],
-        message: `불확실한 흐름 속에서도 ${identity.sajuElement}의 기운이 당신을 지탱하고 있습니다. "${feeling}"이라는 감정은 지나가는 구름과 같습니다.`,
-        curiosity: "지금 당신의 가장 깊은 곳에서 흔들리지 않는 단 하나의 가치는 무엇인가요?",
-        timeSense: "오전의 햇살보다는 해 질 녘의 차분한 공기가 당신의 리듬과 공명하는 시간입니다.",
-        luckyColor: "#818cf8" // Indigo-400
-    };
+        const data = await response.json();
 
-    return insights;
+        return {
+            date: new Date().toISOString().split('T')[0],
+            message: data.message,
+            curiosity: data.curiosity,
+            timeSense: data.timeSense,
+            luckyColor: "#818cf8" // Placeholder until we add color logic to AI
+        };
+    } catch (error) {
+        console.error("Failed to fetch insight:", error);
+        // Fallback Mock (Network Error Case)
+        return {
+            date: new Date().toISOString().split('T')[0],
+            message: "우주의 신호가 잠시 희미합니다. 잠시 후 다시 시도해주세요.",
+            curiosity: "지금 당신의 마음을 가장 편안하게 하는 것은 무엇인가요?",
+            timeSense: "잠시 쉬어가는 시간",
+            luckyColor: "#94a3b8"
+        };
+    }
 };
 
 export const calculateDestinyIdentity = (birthDate: string): Destiny_Identity => {
