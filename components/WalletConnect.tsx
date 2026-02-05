@@ -1,26 +1,73 @@
 "use client";
 
-import { useState } from 'react';
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 export default function WalletConnect() {
-    const [walletAddress, setWalletAddress] = useState<string | null>(null);
-
-    const handleConnect = () => {
-        // Mock connection
-        setWalletAddress("0x71C...9A23");
-    };
-
     return (
-        <div className="absolute top-4 right-4 z-50">
-            <button
-                onClick={handleConnect}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${walletAddress
-                        ? 'bg-slate-800 text-slate-300 border border-slate-700'
-                        : 'bg-white/10 text-white backdrop-blur-md hover:bg-white/20 border border-white/20'
-                    }`}
-            >
-                {walletAddress ? walletAddress : "Connect Wallet"}
-            </button>
-        </div>
+        <ConnectButton.Custom>
+            {({
+                account,
+                chain,
+                openAccountModal,
+                openChainModal,
+                openConnectModal,
+                authenticationStatus,
+                mounted,
+            }) => {
+                const ready = mounted && authenticationStatus !== "loading";
+                const connected =
+                    ready &&
+                    account &&
+                    chain &&
+                    (!authenticationStatus ||
+                        authenticationStatus === "authenticated");
+
+                return (
+                    <div
+                        {...(!ready && {
+                            "aria-hidden": true,
+                            style: {
+                                opacity: 0,
+                                pointerEvents: "none",
+                                userSelect: "none",
+                            },
+                        })}
+                    >
+                        {(() => {
+                            if (!connected) {
+                                return (
+                                    <button onClick={openConnectModal} type="button" className="px-4 py-2 border border-slate-700/50 rounded-full text-slate-400 hover:text-indigo-400 hover:border-indigo-500/50 transition-colors text-sm font-light backdrop-blur-sm bg-slate-900/30">
+                                        지갑 연결 (Web3)
+                                    </button>
+                                );
+                            }
+
+                            if (chain.unsupported) {
+                                return (
+                                    <button onClick={openChainModal} type="button" className="text-red-500">
+                                        Wrong network
+                                    </button>
+                                );
+                            }
+
+                            return (
+                                <div style={{ display: "flex", gap: 12 }}>
+                                    <button
+                                        onClick={openAccountModal}
+                                        type="button"
+                                        className="px-4 py-2 border border-indigo-500/30 rounded-full text-indigo-300 bg-indigo-500/10 hover:bg-indigo-500/20 transition-all text-sm font-light backdrop-blur-sm"
+                                    >
+                                        {account.displayName}
+                                        {account.displayBalance
+                                            ? ` (${account.displayBalance})`
+                                            : ""}
+                                    </button>
+                                </div>
+                            );
+                        })()}
+                    </div>
+                );
+            }}
+        </ConnectButton.Custom>
     );
 }
