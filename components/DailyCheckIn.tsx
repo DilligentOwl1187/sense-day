@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Sparkles, ChevronRight, Clock, MapPin, Calendar } from "lucide-react";
 import ResultCardSkeleton from "./ResultCardSkeleton";
+import Typewriter from "./Typewriter";
 
 interface UserProfile {
     name: string;
@@ -17,10 +18,11 @@ interface AIResponse {
     today_advice: string;
     curious_question: string;
     time_sense: string;
-    art_curation?: {
+    art_curation: {
         title: string;
         description: string;
         color_code: string;
+        music_recommendation?: string;
     };
 }
 
@@ -76,8 +78,16 @@ export default function DailyCheckIn() {
         exit: { opacity: 0, y: -20 }
     };
 
+    // Dynamic Background Style
+    const backgroundStyle = response?.art_curation?.color_code
+        ? { background: `radial-gradient(circle at 50% 10%, ${response.art_curation.color_code}20 0%, #0f172a 100%)` }
+        : {};
+
     return (
-        <div className="w-full h-full flex flex-col items-center justify-center p-4 min-h-[70vh]">
+        <div
+            className="w-full h-full flex flex-col items-center justify-center p-4 min-h-[70vh] transition-colors duration-1000"
+            style={backgroundStyle}
+        >
             <AnimatePresence mode="wait">
 
                 {/* Intro Step */}
@@ -233,7 +243,9 @@ export default function DailyCheckIn() {
                                     className="col-span-1 md:col-span-2 glass-panel p-8 rounded-3xl flex flex-col border-l-4 border-l-indigo-500 shadow-xl shadow-indigo-900/10 bg-slate-900/50"
                                 >
                                     <span className="text-xs uppercase tracking-widest text-indigo-400 mb-4 font-bold">오늘의 한마디</span>
-                                    <p className="text-xl text-slate-200 leading-relaxed font-serif keep-all">{response.today_advice}</p>
+                                    <div className="text-xl text-slate-200 leading-relaxed font-serif keep-all min-h-[60px]">
+                                        <Typewriter text={response.today_advice} speed={40} delay={0.5} />
+                                    </div>
                                 </motion.div>
 
                                 {/* Card 2: Curious Question */}
@@ -259,12 +271,21 @@ export default function DailyCheckIn() {
                                     <motion.div
                                         whileHover={{ y: -5 }}
                                         className="col-span-1 md:col-span-2 lg:col-span-4 glass-panel p-6 rounded-3xl flex flex-row items-center gap-6 border border-slate-800 bg-gradient-to-r from-slate-900 to-slate-800"
+                                        style={{ borderColor: `${response.art_curation.color_code}40` }}
                                     >
-                                        <div className="w-24 h-24 rounded-lg bg-slate-700 flex-shrink-0" style={{ backgroundColor: response.art_curation.color_code }}></div>
+                                        <div
+                                            className="w-24 h-24 rounded-lg flex-shrink-0 shadow-lg"
+                                            style={{ backgroundColor: response.art_curation.color_code }}
+                                        />
                                         <div>
                                             <span className="text-xs uppercase tracking-widest text-slate-400 mb-2 block">오늘의 영혼 처방</span>
                                             <h4 className="text-lg text-white font-serif mb-1">{response.art_curation.title}</h4>
                                             <p className="text-sm text-slate-400">{response.art_curation.description}</p>
+                                            {response.art_curation.music_recommendation && (
+                                                <p className="text-xs text-indigo-400 mt-2 flex items-center gap-2">
+                                                    🎵 {response.art_curation.music_recommendation}
+                                                </p>
+                                            )}
                                         </div>
                                     </motion.div>
                                 )}

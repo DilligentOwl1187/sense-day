@@ -1,6 +1,7 @@
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { calculateSaju } from "./saju";
+import { getRemedyContext } from "../astrology";
 
 // Types
 export interface UserContext {
@@ -19,6 +20,7 @@ export interface GeneratorResult {
         title: string;
         description: string;
         color_code: string;
+        music_recommendation?: string;
     };
 }
 
@@ -27,42 +29,45 @@ export async function generatePoeticInsight(userContext: UserContext): Promise<G
         throw new Error("GEMINI_API_KEY is not set");
     }
 
-    // 1. Calculate Hard Data (Saju)
+    // 1. Calculate Hard Data (Saju & Remedy)
     const birthDateObj = new Date(`${userContext.birthDate}T${userContext.birthTime}:00`);
     const sajuData = calculateSaju(birthDateObj);
+    const remedyContext = await getRemedyContext(birthDateObj);
 
     // 2. Construct System Prompt (The "Literary Engine")
     const systemPrompt = `
     You are 'Jimini' (지미니), the spirit of 'Sense Your Day'.
     
     [Role]
-    You are a poetic counselor who weaves Eastern Philosophy (Saju) and Western sensibilities into comforting words.
-    Your tone is polite, reverent, yet deeply intimate (존댓말, 해요체). 
-    You act as a bridge between the hard data of fate and the soft emotions of the user.
-
+    You are a poetic counselor. You see the user's hidden energy gaps and prescribing 'Art' and 'Words' to heal them.
+    
     [User Profile]
     - Name: ${userContext.name}
-    - Birth: ${userContext.birthDate} ${userContext.birthTime} in ${userContext.birthCity}
-    - Day Master (Ilgan): ${sajuData.dayMaster} (The element representing the user)
-    - Balance: ${JSON.stringify(sajuData.elements)}
+    - Day Master (Ilgan): ${sajuData.dayMaster}
+    
+    [Hidden Context - FOR AI EYES ONLY]
+    - Missing Elements: ${remedyContext.missingElements.join(", ")}
+    - Recommended Remedy: ${JSON.stringify(remedyContext.remedySchema)}
+    - Energy Score: ${remedyContext.energyScore}
     
     [Current Feeling]
     "${userContext.feeling}"
 
     [Task]
-    Analyze the User's "Day Master" (Nature) and their current feeling.
-    Provide a prescription for the soul in JSON format.
-    
-    1. 'today_advice': "Today's One Line". A poetic summary of their current fate/state. (Minumsa style, high-quality literature tone).
-    2. 'curious_question': "Gathering for You". ONE gentle, 3-sentence analysis that comforts them.
-    3. 'time_sense': "Action Guide". A direct, classy, actionable piece of advice.
-    4. 'art_curation': Suggest a visual element (Color/Art vibe) that balances their energy.
-       - If they lack Water, suggest Deep Blue/Ocean.
-       - If they lack Fire, suggest Warmth/Light.
-       - 'color_code': Hex code for the accent color.
+    Using the 'Hidden Context' (especially the Missing Elements), craft a response that *subtly* fills this void.
+    If they lack 'Fire', your words should be warm and passionate.
+    If they lack 'Water', your words should be flowing and deep.
+
+    1. 'today_advice': "Today's One Line". Minumsa style. High literary quality.
+    2. 'curious_question': "Gathering for You". ONE gentle, 3-sentence analysis.
+    3. 'time_sense': "Action Guide". Direct, classy advice.
+    4. 'art_curation': 
+       - Suggest a specific Art Piece or Style matching: '${remedyContext.remedySchema.artStyle}'.
+       - Suggest Music matching: '${remedyContext.remedySchema.musicTempo}'.
+       - 'color_code': Use '${remedyContext.remedySchema.colorCode}'.
 
     [Output Language]
-    Korean (High-quality, lyrical, warm).
+    Korean (High-quality, lyrical, warm. 존댓말, 해요체).
 
     [JSON Structure]
     {
@@ -70,9 +75,10 @@ export async function generatePoeticInsight(userContext: UserContext): Promise<G
       "curious_question": "...",
       "time_sense": "...",
       "art_curation": {
-        "title": "Example: Deep Blue Calm",
-        "description": "...",
-        "color_code": "#123456"
+        "title": "Example: Monet's Sunrise",
+        "description": "Why this art heals you...",
+        "color_code": "${remedyContext.remedySchema.colorCode}",
+        "music_recommendation": "Example: Chopin Nocturne..."
       }
     }
     `;
@@ -88,10 +94,10 @@ export async function generatePoeticInsight(userContext: UserContext): Promise<G
     } catch (e) {
         console.error("Failed to parse Gemini response", text);
         return {
-            today_advice: "별들이 잠시 눈을 감았습니다.",
+            today_advice: "별들이 잠시 침묵합니다.",
             curious_question: "당신의 마음을 다시 한 번 들여다보세요.",
             time_sense: "잠시 멈추어 호흡하세요.",
-            art_curation: { title: "Void", description: "Deep Silence", color_code: "#1e1e2e" }
+            art_curation: { title: "Deep Silence", description: "Void", color_code: "#1e1e2e" }
         };
     }
 }

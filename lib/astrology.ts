@@ -1,5 +1,5 @@
-import swisseph from 'swisseph-wasm';
-import { calculateSaju, SajuData } from './engine/saju';
+import { REMEDY_MAPPING, RemedySchema } from './remedy';
+import { calculateSaju } from './engine/saju';
 
 export interface PlanetaryPositions {
     Sun: number;
@@ -13,10 +13,11 @@ export interface PlanetaryPositions {
 }
 
 export interface RemedyContext {
-    missingElements: string[]; // From Saju (e.g., "Water", "Fire")
-    dominantPlanets: string[]; // From Astrology
+    missingElements: string[];
+    dominantPlanets: string[];
     recommendedColor: string;
-    energyScore: number; // 0-100 balance score
+    energyScore: number;
+    remedySchema: RemedySchema;
 }
 
 /**
@@ -46,27 +47,37 @@ export async function getRemedyContext(date: Date): Promise<RemedyContext> {
     // 1. Get Saju Data
     const saju = calculateSaju(date);
 
-    // 2. Analyze Elements (Wood, Fire, Earth, Metal, Water)
+    // 2. Analyze Elements & Determine Scores
+    // Simple logic: Base score 100, deduct for missing elements to simulate "Energy Balance"
     const elements = saju.elements;
     const missing: string[] = [];
+
+    // Check missing elements
     if (elements.Wood === 0) missing.push("Wood");
     if (elements.Fire === 0) missing.push("Fire");
     if (elements.Earth === 0) missing.push("Earth");
     if (elements.Metal === 0) missing.push("Metal");
     if (elements.Water === 0) missing.push("Water");
 
-    // 3. Determine Color based on missing element (Simple Logic)
-    let recommendedColor = "#FFFFFF";
-    if (missing.includes("Water")) recommendedColor = "#1E3A8A"; // Blue
-    else if (missing.includes("Fire")) recommendedColor = "#B91C1C"; // Red
-    else if (missing.includes("Wood")) recommendedColor = "#15803D"; // Green
-    else if (missing.includes("Metal")) recommendedColor = "#E5E5E5"; // Silver/White
-    else if (missing.includes("Earth")) recommendedColor = "#A16207"; // Brown/Gold
+    // 3. Determine Primary Remedy
+    // If multiple missing, pick the first one (or based on season - advanced logic for later)
+    // If none missing, default to user's Day Master's "enhancing" element.
+    let primaryTarget = missing.length > 0 ? missing[0] : "Fire"; // Default fallback
+
+    // Edge case: If nothing missing, maybe strengthen the weakest? 
+    // For now, let's keep it simple.
+
+    const remedy = REMEDY_MAPPING[primaryTarget] || REMEDY_MAPPING["Fire"];
+
+    // 4. Calculate Energy Score (Mock Logic for now)
+    // Fewer missing elements = Higher score
+    const energyScore = Math.max(50, 100 - (missing.length * 10));
 
     return {
         missingElements: missing,
-        dominantPlanets: ["Sun"], // Placeholder
-        recommendedColor,
-        energyScore: 80 // Placeholder
+        dominantPlanets: ["Sun", "Jupiter"], // Placeholder for Astro-logic
+        recommendedColor: remedy.colorCode,
+        energyScore,
+        remedySchema: remedy
     };
 }
