@@ -34,7 +34,7 @@ export function calculateSaju(date: Date): SajuData {
             day: `${eightChar.getDayGan()}${eightChar.getDayZhi()}`,
             time: `${eightChar.getTimeGan()}${eightChar.getTimeZhi()}`,
         },
-        dayMaster: eightChar.getDayGan(), // The most important character (Ilgan)
+        dayMaster: eightChar.getDayGan().toString(), // The most important character (Ilgan)
         // Detailed element counting requires parsing the Gan/Zhi to WuXing (Five Elements)
         // lunar-javascript provides getWuXing() for Gan/Zhi
         elements: calculateElementBalance(eightChar)

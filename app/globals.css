@@ -3,17 +3,24 @@
 @tailwind utilities;
 
 :root {
-  --background: 2 6 23; /* slate-950 */
-  --foreground: 226 232 240; /* slate-200 */
-  
+  --background: 2 6 23;
+  /* slate-950 */
+  --foreground: 226 232 240;
+  /* slate-200 */
+
   /* Emotional Palette */
-  --primary: 99 102 241; /* indigo-500 */
-  --primary-glow: 79 70 229; /* indigo-600 */
-  --accent: 244 63 94; /* rose-500 */
-  
+  --primary: 99 102 241;
+  /* indigo-500 */
+  --primary-glow: 79 70 229;
+  /* indigo-600 */
+  --accent: 244 63 94;
+  /* rose-500 */
+
   /* Cards etc */
-  --card-bg: 15 23 42; /* slate-900 */
-  --card-border: 30 41 59; /* slate-800 */
+  --card-bg: 15 23 42;
+  /* slate-900 */
+  --card-border: 30 41 59;
+  /* slate-800 */
 }
 
 body {
@@ -28,14 +35,10 @@ body {
   .text-balance {
     text-wrap: balance;
   }
-  
-  .glass-panel {
-    @apply bg-slate-900/50 backdrop-blur-md border border-slate-800/50;
-  }
-}
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .glass-panel {
+    background-color: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(30, 41, 59, 0.5);
   }
 }
