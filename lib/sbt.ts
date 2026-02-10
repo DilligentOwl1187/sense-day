@@ -1,5 +1,5 @@
 
-// import { Result } from './supabase'; // Types not exported, using any for now or defining locally
+// import { Result } from './supabase';
 import { REMEDY_MAPPING } from './remedy';
 
 interface Result {
