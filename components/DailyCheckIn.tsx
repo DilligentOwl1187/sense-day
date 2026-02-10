@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Sparkles, ChevronRight, Clock, MapPin, Calendar } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 import ResultCardSkeleton from "./ResultCardSkeleton";
 import Typewriter from "./Typewriter";
 
@@ -27,7 +29,8 @@ interface AIResponse {
 }
 
 export default function DailyCheckIn() {
-    const [step, setStep] = useState<"intro" | "name" | "birth" | "city" | "feeling" | "loading" | "result">("intro");
+    const router = useRouter();
+    const [step, setStep] = useState<"intro" | "name" | "birth" | "city" | "feeling" | "loading">("intro");
     const [profile, setProfile] = useState<UserProfile>({
         name: "",
         birthDate: "",
@@ -35,7 +38,6 @@ export default function DailyCheckIn() {
         birthCity: "",
         feeling: ""
     });
-    const [response, setResponse] = useState<AIResponse | null>(null);
 
     const handleNext = () => {
         if (step === "intro") setStep("name");
@@ -51,6 +53,7 @@ export default function DailyCheckIn() {
         setStep("loading");
 
         try {
+            // 1. Get AI Analysis
             const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -60,13 +63,38 @@ export default function DailyCheckIn() {
                 })
             });
 
-            if (!res.ok) throw new Error('Failed to fetch');
+            if (!res.ok) throw new Error('Failed to fetch from AI');
 
-            const data = await res.json();
-            setResponse(data);
-            setStep("result");
+            const analysisResult: AIResponse = await res.json();
+
+            // 2. Save to Supabase
+            const { data, error } = await supabase
+                .from('results')
+                .insert([
+                    {
+                        user_profile: profile,
+                        analysis_result: analysisResult
+                    }
+                ])
+                .select()
+                .single();
+
+            if (error) {
+                console.error("Supabase Save Error:", error);
+                // Fallback: If save fails, we might still want to show result, 
+                // but since we shifted to routing, we might alert the user or try again.
+                // For MVP, alerting or logging is fine.
+                throw error;
+            }
+
+            // 3. Redirect to Result Page
+            if (data) {
+                router.push(`/result/${data.id}`);
+            }
+
         } catch (error) {
             console.error(error);
+            alert("우주와 연결하는 도중 잠시 지연이 발생했습니다. 다시 시도해주세요.");
             setStep("feeling"); // Retry
         }
     };
@@ -78,16 +106,8 @@ export default function DailyCheckIn() {
         exit: { opacity: 0, y: -20 }
     };
 
-    // Dynamic Background Style
-    const backgroundStyle = response?.art_curation?.color_code
-        ? { background: `radial-gradient(circle at 50% 10%, ${response.art_curation.color_code}20 0%, #0f172a 100%)` }
-        : {};
-
     return (
-        <div
-            className="w-full h-full flex flex-col items-center justify-center p-4 min-h-[70vh] transition-colors duration-1000"
-            style={backgroundStyle}
-        >
+        <div className="w-full h-full flex flex-col items-center justify-center p-4 min-h-[70vh]">
             <AnimatePresence mode="wait">
 
                 {/* Intro Step */}
@@ -216,15 +236,14 @@ export default function DailyCheckIn() {
                     </motion.div>
                 )}
 
-                {/* Result View */}
-                {step !== "intro" && step !== "name" && step !== "birth" && step !== "city" && step !== "feeling" && (
+                {/* Loading Step */}
+                {step === "loading" && (
                     <motion.div
-                        key="result-section"
+                        key="loading"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         className="w-full flex flex-col items-center"
                     >
-                        {/* User Input Recap */}
                         <motion.div
                             layoutId="user-input"
                             className="mb-8 p-4 bg-slate-800/30 rounded-xl border border-slate-700/30 text-slate-300 max-w-2xl text-center w-full"
@@ -232,72 +251,7 @@ export default function DailyCheckIn() {
                             <span className="text-slate-500 text-xs block mb-1">{profile.name}님의 기록</span>
                             "{profile.feeling}"
                         </motion.div>
-
-                        {step === "loading" && <ResultCardSkeleton />}
-
-                        {step === "result" && response && (
-                            <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                                {/* Card 1: Today's Advice */}
-                                <motion.div
-                                    whileHover={{ y: -5 }}
-                                    className="col-span-1 md:col-span-2 glass-panel p-8 rounded-3xl flex flex-col border-l-4 border-l-indigo-500 shadow-xl shadow-indigo-900/10 bg-slate-900/50"
-                                >
-                                    <span className="text-xs uppercase tracking-widest text-indigo-400 mb-4 font-bold">오늘의 한마디</span>
-                                    <div className="text-xl text-slate-200 leading-relaxed font-serif keep-all min-h-[60px]">
-                                        <Typewriter text={response.today_advice} speed={40} delay={0.5} />
-                                    </div>
-                                </motion.div>
-
-                                {/* Card 2: Curious Question */}
-                                <motion.div
-                                    whileHover={{ y: -5 }}
-                                    className="col-span-1 glass-panel p-6 rounded-3xl flex flex-col border-t-4 border-t-rose-500 shadow-xl shadow-rose-900/10 bg-slate-900/50"
-                                >
-                                    <span className="text-xs uppercase tracking-widest text-rose-400 mb-4 font-bold">당신을 위한 갈무리</span>
-                                    <p className="text-sm text-slate-300 leading-relaxed font-light keep-all">{response.curious_question}</p>
-                                </motion.div>
-
-                                {/* Card 3: Action Guide */}
-                                <motion.div
-                                    whileHover={{ y: -5 }}
-                                    className="col-span-1 glass-panel p-6 rounded-3xl flex flex-col border-t-4 border-t-amber-500 shadow-xl shadow-amber-900/10 bg-slate-900/50"
-                                >
-                                    <span className="text-xs uppercase tracking-widest text-amber-400 mb-4 font-bold">오늘의 행동 지침</span>
-                                    <p className="text-sm text-slate-300 leading-relaxed font-light keep-all">{response.time_sense}</p>
-                                </motion.div>
-
-                                {/* Card 4: Art/Remedy (New) */}
-                                {response.art_curation && (
-                                    <motion.div
-                                        whileHover={{ y: -5 }}
-                                        className="col-span-1 md:col-span-2 lg:col-span-4 glass-panel p-6 rounded-3xl flex flex-row items-center gap-6 border border-slate-800 bg-gradient-to-r from-slate-900 to-slate-800"
-                                        style={{ borderColor: `${response.art_curation.color_code}40` }}
-                                    >
-                                        <div
-                                            className="w-24 h-24 rounded-lg flex-shrink-0 shadow-lg"
-                                            style={{ backgroundColor: response.art_curation.color_code }}
-                                        />
-                                        <div>
-                                            <span className="text-xs uppercase tracking-widest text-slate-400 mb-2 block">오늘의 영혼 처방</span>
-                                            <h4 className="text-lg text-white font-serif mb-1">{response.art_curation.title}</h4>
-                                            <p className="text-sm text-slate-400">{response.art_curation.description}</p>
-                                            {response.art_curation.music_recommendation && (
-                                                <p className="text-xs text-indigo-400 mt-2 flex items-center gap-2">
-                                                    🎵 {response.art_curation.music_recommendation}
-                                                </p>
-                                            )}
-                                        </div>
-                                    </motion.div>
-                                )}
-
-                                <button
-                                    onClick={() => { setStep("intro"); setProfile({ ...profile, feeling: "" }); }}
-                                    className="col-span-1 md:col-span-2 lg:col-span-4 mt-8 mx-auto px-8 py-3 rounded-full border border-slate-700 text-slate-400 hover:text-white hover:border-indigo-500 hover:bg-slate-800 transition-all text-sm"
-                                >
-                                    처음으로 돌아가기
-                                </button>
-                            </div>
-                        )}
+                        <ResultCardSkeleton />
                     </motion.div>
                 )}
             </AnimatePresence>
