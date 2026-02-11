@@ -12,6 +12,7 @@ interface UserProfile {
     name: string;
     birthDate: string;
     birthTime: string;
+    birthTimeUnknown?: boolean;
     birthCity: string;
     feeling: string;
 }
@@ -104,7 +105,7 @@ export default function DailyCheckIn() {
         initial: { opacity: 0, y: 10 },
         animate: { opacity: 1, y: 0 },
         exit: { opacity: 0, y: -10 },
-        transition: { duration: 0.6, ease: "easeOut" }
+        transition: { duration: 0.6 }
     };
 
     return (
@@ -157,7 +158,7 @@ export default function DailyCheckIn() {
                     </motion.div>
                 )}
 
-                {/* Birth Info Step */}
+                {/* Birth Info Step: Segmented Input */}
                 {step === "birth" && (
                     <motion.div key="birth" {...fadeInUp} className="w-full max-w-[320px] space-y-10">
                         <div className="text-center space-y-2">
@@ -166,25 +167,121 @@ export default function DailyCheckIn() {
                             </h3>
                         </div>
 
-                        <div className="space-y-6">
-                            <div className="relative">
+                        <div className="space-y-8">
+                            {/* Date Segments */}
+                            <div className="flex justify-center items-end space-x-2 font-serif text-xl text-[#2A2A2A]">
                                 <input
-                                    type="date"
-                                    value={profile.birthDate}
-                                    onChange={(e) => setProfile({ ...profile, birthDate: e.target.value })}
-                                    className="w-full py-3 text-center text-lg font-serif bg-transparent border-b border-[#C8BEB4] focus:border-[#E07A5F] outline-none text-[#2A2A2A]"
+                                    type="text"
+                                    placeholder="YYYY"
+                                    maxLength={4}
+                                    value={profile.birthDate.split('-')[0] || ''}
+                                    onChange={(e) => {
+                                        const val = e.target.value.replace(/\D/g, '');
+                                        const parts = profile.birthDate.split('-');
+                                        const newDate = `${val}-${parts[1] || ''}-${parts[2] || ''}`;
+                                        setProfile({ ...profile, birthDate: newDate });
+                                        if (val.length === 4) document.getElementById('month-input')?.focus();
+                                    }}
+                                    className="w-16 py-2 text-center bg-transparent border-b border-[#C8BEB4] focus:border-[#2A2A2A] outline-none placeholder:text-[#C8BEB4]/50 transition-colors"
+                                />
+                                <span className="text-[#C8BEB4] pb-2">.</span>
+
+                                <input
+                                    id="month-input"
+                                    type="text"
+                                    placeholder="MM"
+                                    maxLength={2}
+                                    value={profile.birthDate.split('-')[1] || ''}
+                                    onChange={(e) => {
+                                        const val = e.target.value.replace(/\D/g, '');
+                                        const parts = profile.birthDate.split('-');
+                                        const newDate = `${parts[0] || ''}-${val}-${parts[2] || ''}`;
+                                        setProfile({ ...profile, birthDate: newDate });
+                                        if (val.length === 2) document.getElementById('day-input')?.focus();
+                                    }}
+                                    className="w-10 py-2 text-center bg-transparent border-b border-[#C8BEB4] focus:border-[#2A2A2A] outline-none placeholder:text-[#C8BEB4]/50 transition-colors"
+                                />
+                                <span className="text-[#C8BEB4] pb-2">.</span>
+
+                                <input
+                                    id="day-input"
+                                    type="text"
+                                    placeholder="DD"
+                                    maxLength={2}
+                                    value={profile.birthDate.split('-')[2] || ''}
+                                    onChange={(e) => {
+                                        const val = e.target.value.replace(/\D/g, '');
+                                        const parts = profile.birthDate.split('-');
+                                        const newDate = `${parts[0] || ''}-${parts[1] || ''}-${val}`;
+                                        setProfile({ ...profile, birthDate: newDate });
+                                        if (val.length === 2 && !profile.birthTimeUnknown) document.getElementById('hour-input')?.focus();
+                                    }}
+                                    className="w-10 py-2 text-center bg-transparent border-b border-[#C8BEB4] focus:border-[#2A2A2A] outline-none placeholder:text-[#C8BEB4]/50 transition-colors"
                                 />
                             </div>
-                            <div className="relative">
-                                <input
-                                    type="time"
-                                    value={profile.birthTime}
-                                    onChange={(e) => setProfile({ ...profile, birthTime: e.target.value })}
-                                    className="w-full py-3 text-center text-lg font-serif bg-transparent border-b border-[#C8BEB4] focus:border-[#E07A5F] outline-none text-[#2A2A2A]"
-                                />
+
+                            {/* Time Segments & Unknown Toggle */}
+                            <div className="relative flex flex-col items-center space-y-4">
+                                <div className={`flex justify-center items-end space-x-2 font-serif text-xl text-[#2A2A2A] transition-all duration-500 relative ${profile.birthTimeUnknown ? 'opacity-30 blur-[0.5px] pointer-events-none select-none' : 'opacity-100'}`}>
+                                    <input
+                                        id="hour-input"
+                                        type="text"
+                                        placeholder="HH"
+                                        maxLength={2}
+                                        value={profile.birthTime.split(':')[0] || ''}
+                                        onChange={(e) => {
+                                            const val = e.target.value.replace(/\D/g, '');
+                                            const parts = profile.birthTime.split(':');
+                                            const newTime = `${val}:${parts[1] || ''}`;
+                                            setProfile({ ...profile, birthTime: newTime });
+                                            if (val.length === 2) document.getElementById('minute-input')?.focus();
+                                        }}
+                                        className="w-10 py-2 text-center bg-transparent border-b border-[#C8BEB4] focus:border-[#2A2A2A] outline-none placeholder:text-[#C8BEB4]/50 transition-colors"
+                                        disabled={profile.birthTimeUnknown}
+                                    />
+                                    <span className="text-[#C8BEB4] pb-2">:</span>
+                                    <input
+                                        id="minute-input"
+                                        type="text"
+                                        placeholder="MM"
+                                        maxLength={2}
+                                        value={profile.birthTime.split(':')[1] || ''}
+                                        onChange={(e) => {
+                                            const val = e.target.value.replace(/\D/g, '');
+                                            const parts = profile.birthTime.split(':');
+                                            const newTime = `${parts[0] || ''}:${val}`;
+                                            setProfile({ ...profile, birthTime: newTime });
+                                            if (val.length === 2) handleNext(); // Use Enter or click next manually
+                                        }}
+                                        className="w-10 py-2 text-center bg-transparent border-b border-[#C8BEB4] focus:border-[#2A2A2A] outline-none placeholder:text-[#C8BEB4]/50 transition-colors"
+                                        disabled={profile.birthTimeUnknown}
+                                    />
+
+                                    {/* Geometric Strikethrough Line (Only visible when unknown) */}
+                                    <div className={`absolute top-1/2 left-0 w-full h-px bg-[#C8BEB4] transition-transform duration-500 origin-left ${profile.birthTimeUnknown ? 'scale-x-100' : 'scale-x-0'}`}></div>
+                                </div>
+
+                                {/* Unknown Checkbox */}
+                                <label className="flex items-center space-x-2 cursor-pointer group">
+                                    <input
+                                        type="checkbox"
+                                        checked={profile.birthTimeUnknown || false}
+                                        onChange={(e) => setProfile({ ...profile, birthTimeUnknown: e.target.checked })}
+                                        className="hidden"
+                                    />
+                                    <div className={`w-3 h-3 border border-[#C8BEB4] transition-colors ${profile.birthTimeUnknown ? 'bg-[#C8BEB4]' : 'bg-transparent group-hover:border-[#E07A5F]'}`}></div>
+                                    <span className={`text-xs font-serif tracking-widest transition-colors ${profile.birthTimeUnknown ? 'text-[#C8BEB4]' : 'text-[#C8BEB4] group-hover:text-[#E07A5F]'}`}>
+                                        시간을 모릅니다
+                                    </span>
+                                </label>
                             </div>
                         </div>
-                        <button onClick={handleNext} disabled={!profile.birthDate} className="w-full py-4 text-[#C8BEB4] hover:text-[#E07A5F] disabled:opacity-0 transition-all font-serif text-sm">
+
+                        <button
+                            onClick={handleNext}
+                            disabled={!profile.birthDate || (!profile.birthTime && !profile.birthTimeUnknown)}
+                            className="w-full py-4 text-[#C8BEB4] hover:text-[#E07A5F] disabled:opacity-0 transition-all font-serif text-sm"
+                        >
                             다음 <ChevronRight className="inline w-3 h-3 ml-1" />
                         </button>
                     </motion.div>

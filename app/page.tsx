@@ -15,11 +15,11 @@ export default function Home() {
           </p>
           <h1 className="text-4xl md:text-5xl font-serif font-bold tracking-tight text-[#2A2A2A] leading-tight">
             당신의 우주가 보내는<br />
-            가장 사적인 초대
+            가장 사적인 한마디
           </h1>
           <p className="text-sm md:text-base text-[#3C3C3C] font-light leading-relaxed font-sans max-w-xs mx-auto">
             당신의 탄생 정보와 오늘의 감각을 연결하여,<br />
-            가장 깊은 곳의 위로와 한 조각의 예술을 처방합니다.
+            하루의 위로와 한 조각의 예술을 처방합니다.
           </p>
         </div>
 

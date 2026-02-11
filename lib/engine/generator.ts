@@ -1,15 +1,23 @@
-
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { calculateSaju } from "./saju";
-import { getRemedyContext } from "../astrology";
+import { getRemedyContext, PlanetarySigns, RemedySchema } from "../astrology";
 
 // Types
 export interface UserContext {
     name: string;
     birthDate: string; // YYYY-MM-DD
     birthTime: string; // HH:mm
+    birthTimeUnknown?: boolean;
     birthCity: string;
     feeling: string;
+    // Injected Hard Data (Optional, but preferred)
+    sajuElements?: string[];
+    cosmicWeather?: PlanetarySigns;
+    recommendedColor?: string;
+    dominantPlanet?: string;
+    remedySchema?: RemedySchema; // To pass full remedy details
+    energyScore?: number;
+    dayMaster?: string;
 }
 
 export interface GeneratorResult {
@@ -27,32 +35,36 @@ export interface GeneratorResult {
 export async function generatePoeticInsight(userContext: UserContext): Promise<GeneratorResult> {
     if (!process.env.GEMINI_API_KEY) {
         console.warn("GEMINI_API_KEY is not set. Returning poetic fallback.");
-
-        const poeticSilences = [
-            "우주가 잠시 숨을 고르고 있습니다. 당신의 내면에서 답을 찾아보세요.",
-            "별들이 당신의 이야기를 경청하고 있습니다. 잠시만 기다려주세요.",
-            "침묵 속에도 대답이 있습니다. 깊은 호흡으로 그 소리를 들어보세요.",
-            "밤하늘의 구름이 걷히고 있습니다. 곧 당신의 별이 빛날 것입니다."
-        ];
-        const randomSilence = poeticSilences[Math.floor(Math.random() * poeticSilences.length)];
-
         return {
-            today_advice: randomSilence,
+            today_advice: "우주가 잠시 숨을 고르고 있습니다. 당신의 내면에서 답을 찾아보세요.",
             curious_question: "지금 이 순간, 당신에게 가장 필요한 온기는 무엇인가요?",
-            time_sense: "잠시 눈을 감고 깊은 호흡을 세 번 반복해보세요.",
+            time_sense: "잠시 멈추어 호흡하세요.",
             art_curation: {
                 title: "Inner Universe",
                 description: "당신의 내면에 존재하는 고요한 우주를 마주하세요.",
-                color_code: "#4F46E5", // Indigo
+                color_code: "#4F46E5",
                 music_recommendation: "Debussy - Clair de Lune"
             }
         };
     }
 
-    // 1. Calculate Hard Data (Saju & Remedy)
-    const birthDateObj = new Date(`${userContext.birthDate}T${userContext.birthTime}:00`);
-    const sajuData = calculateSaju(birthDateObj);
-    const remedyContext = await getRemedyContext(birthDateObj);
+    // 1. Prepare Data (Use injected or Calculate if missing)
+    let dayMaster = userContext.dayMaster;
+    let missingElements = userContext.sajuElements;
+    let remedySchema = userContext.remedySchema;
+    let energyScore = userContext.energyScore;
+
+    // Fallback calculation if not injected (Backward compatibility)
+    if (!dayMaster || !missingElements || !remedySchema) {
+        const birthDateObj = new Date(`${userContext.birthDate}T${userContext.birthTime}:00`);
+        const sajuData = calculateSaju(birthDateObj);
+        const remedyContext = await getRemedyContext(birthDateObj);
+
+        dayMaster = sajuData.dayMaster;
+        missingElements = remedyContext.missingElements;
+        remedySchema = remedyContext.remedySchema;
+        energyScore = remedyContext.energyScore;
+    }
 
     // 2. Construct System Prompt (The "Literary Engine")
     const systemPrompt = `
@@ -63,12 +75,13 @@ export async function generatePoeticInsight(userContext: UserContext): Promise<G
     
     [User Profile]
     - Name: ${userContext.name}
-    - Day Master (Ilgan): ${sajuData.dayMaster}
+    - Day Master (Ilgan): ${dayMaster}
+    ${userContext.birthTimeUnknown ? "- Note: User does not know their exact birth time. The 'Time' pillar is approximated to noon." : ""}
     
     [Hidden Context - FOR AI EYES ONLY]
-    - Missing Elements: ${remedyContext.missingElements.join(", ")}
-    - Recommended Remedy: ${JSON.stringify(remedyContext.remedySchema)}
-    - Energy Score: ${remedyContext.energyScore}
+    - Missing Elements: ${missingElements?.join(", ")}
+    - Recommended Remedy: ${JSON.stringify(remedySchema)}
+    - Energy Score: ${energyScore}
     
     [Current Feeling]
     "${userContext.feeling}"
@@ -78,13 +91,15 @@ export async function generatePoeticInsight(userContext: UserContext): Promise<G
     If they lack 'Fire', your words should be warm and passionate.
     If they lack 'Water', your words should be flowing and deep.
 
+    ${userContext.birthTimeUnknown ? "**Special Instruction**: Since the user doesn't know their birth time, start the 'today_advice' or 'time_sense' with a gentle acknowledgement like '정확한 시간을 알 수 없어도, 당신이 이 세상에 도착한 날의 별들은 이미 충분한 이야기를 품고 있습니다.'" : ""}
+
     1. 'today_advice': "Today's One Line". Minumsa style. High literary quality.
     2. 'curious_question': "Gathering for You". ONE gentle, 3-sentence analysis.
     3. 'time_sense': "Action Guide". Direct, classy advice.
     4. 'art_curation': 
-       - Suggest a specific Art Piece or Style matching: '${remedyContext.remedySchema.artStyle}'.
-       - Suggest Music matching: '${remedyContext.remedySchema.musicTempo}'.
-       - 'color_code': Use '${remedyContext.remedySchema.colorCode}'.
+       - Suggest a specific Art Piece or Style matching: '${remedySchema?.artStyle}'.
+       - Suggest Music matching: '${remedySchema?.musicTempo}'.
+       - 'color_code': Use '${remedySchema?.colorCode}'.
 
     [Output Language]
     Korean (High-quality, lyrical, warm. 존댓말, 해요체).
@@ -97,7 +112,7 @@ export async function generatePoeticInsight(userContext: UserContext): Promise<G
       "art_curation": {
         "title": "Example: Monet's Sunrise",
         "description": "Why this art heals you...",
-        "color_code": "${remedyContext.remedySchema.colorCode}",
+        "color_code": "${remedySchema?.colorCode}",
         "music_recommendation": "Example: Chopin Nocturne..."
       }
     }
@@ -106,13 +121,12 @@ export async function generatePoeticInsight(userContext: UserContext): Promise<G
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig: { responseMimeType: "application/json" } });
 
-    const result = await model.generateContent(systemPrompt);
-    const text = result.response.text();
-
     try {
+        const result = await model.generateContent(systemPrompt);
+        const text = result.response.text();
         return JSON.parse(text) as GeneratorResult;
     } catch (e) {
-        console.error("Failed to parse Gemini response", text);
+        console.error("Failed to generate/parse Gemini response", e);
         return {
             today_advice: "별들이 잠시 침묵합니다.",
             curious_question: "당신의 마음을 다시 한 번 들여다보세요.",

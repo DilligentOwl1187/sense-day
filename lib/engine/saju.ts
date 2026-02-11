@@ -8,9 +8,36 @@ export interface SajuData {
         day: string;
         time: string;
     };
-    dayMaster: string; // Ilgan (The User's Core Element)
-    elements: { [key: string]: number }; // Mock implementation for now, or derived from pillars
+    dayMaster: string; // Ilgan (The User's Core Element / Self)
+    elements: { [key: string]: number }; // Wood, Fire, Earth, Metal, Water count
+    animal: string; // Zodiac Animal (Year Branch)
 }
+
+// Mappings for Heavenly Stems (Cheongan) -> Element
+const GAN_MAP: { [key: string]: string } = {
+    '甲': 'Wood', '乙': 'Wood',
+    '丙': 'Fire', '丁': 'Fire',
+    '戊': 'Earth', '己': 'Earth',
+    '庚': 'Metal', '辛': 'Metal',
+    '壬': 'Water', '癸': 'Water'
+};
+
+// Mappings for Earthly Branches (Jiji) -> Element
+const ZHI_MAP: { [key: string]: string } = {
+    '寅': 'Wood', '卯': 'Wood',
+    '巳': 'Fire', '午': 'Fire',
+    '辰': 'Earth', '戌': 'Earth', '丑': 'Earth', '未': 'Earth',
+    '申': 'Metal', '酉': 'Metal',
+    '亥': 'Water', '子': 'Water'
+};
+
+// Mappings for Zodiac Animals
+const ANIMAL_MAP: { [key: string]: string } = {
+    '子': 'Rat', '丑': 'Ox', '寅': 'Tiger', '卯': 'Rabbit',
+    '辰': 'Dragon', '巳': 'Snake', '午': 'Horse', '未': 'Goat',
+    '申': 'Monkey', '酉': 'Rooster', '戌': 'Dog', '亥': 'Pig'
+};
+
 
 export function calculateSaju(date: Date): SajuData {
     // Lunar-javascript accepts YYYY, MM, DD, HH, mm, ss
@@ -24,51 +51,48 @@ export function calculateSaju(date: Date): SajuData {
     );
 
     const lunar = solar.getLunar();
-    const eightChar = lunar.getEightChar(); // BaZi
+    const eightChar = lunar.getEightChar(); // BaZi (Palja)
+
+    // Ensure we get strings
+    const yearGan = eightChar.getYearGan().toString();
+    const yearZhi = eightChar.getYearZhi().toString();
+    const monthGan = eightChar.getMonthGan().toString();
+    const monthZhi = eightChar.getMonthZhi().toString();
+    const dayGan = eightChar.getDayGan().toString();
+    const dayZhi = eightChar.getDayZhi().toString();
+    const timeGan = eightChar.getTimeGan().toString();
+    const timeZhi = eightChar.getTimeZhi().toString();
 
     // Heavenly Stems (Cheongan) & Earthly Branches (Jiji)
-    const result = {
+    const result: SajuData = {
         fourPillars: {
-            year: `${eightChar.getYearGan()}${eightChar.getYearZhi()}`, // e.g., GapJa
-            month: `${eightChar.getMonthGan()}${eightChar.getMonthZhi()}`,
-            day: `${eightChar.getDayGan()}${eightChar.getDayZhi()}`,
-            time: `${eightChar.getTimeGan()}${eightChar.getTimeZhi()}`,
+            year: `${yearGan}${yearZhi}`,
+            month: `${monthGan}${monthZhi}`,
+            day: `${dayGan}${dayZhi}`,
+            time: `${timeGan}${timeZhi}`,
         },
-        dayMaster: eightChar.getDayGan().toString(), // The most important character (Ilgan)
-        // Detailed element counting requires parsing the Gan/Zhi to WuXing (Five Elements)
-        // lunar-javascript provides getWuXing() for Gan/Zhi
-        elements: calculateElementBalance(eightChar)
+        dayMaster: dayGan, // The Ilgan
+        elements: calculateElementBalance([
+            yearGan, yearZhi, monthGan, monthZhi, dayGan, dayZhi, timeGan, timeZhi
+        ]),
+        animal: ANIMAL_MAP[yearZhi] || "Unknown" // Zodiac Animal
     };
 
     return result;
 }
 
-function calculateElementBalance(eightChar: any): { [key: string]: number } {
-    // Simplified counting
-    const pillars = [
-        eightChar.getYearGan(), eightChar.getYearZhi(),
-        eightChar.getMonthGan(), eightChar.getMonthZhi(),
-        eightChar.getDayGan(), eightChar.getDayZhi(),
-        eightChar.getTimeGan(), eightChar.getTimeZhi()
-    ];
-
+function calculateElementBalance(chars: string[]): { [key: string]: number } {
     const counts: { [key: string]: number } = {
         Wood: 0, Fire: 0, Earth: 0, Metal: 0, Water: 0
     };
 
-    pillars.forEach(char => {
-        // char.getWuXing() returns "Wood", "Fire" etc. (in Chinese/Korean usually)
-        // We map it to English. The library usually returns Chinese characters like '木', '火'
-        // Or English depending on configuration. Let's assume standard object property.
+    chars.forEach(char => {
+        // Check both maps
+        const element = GAN_MAP[char] || ZHI_MAP[char];
 
-        // Checking library doc assumption: .getWuXing() returns string in Chinese
-        const wuxing = char.getWuXing(); // e.g. "木"
-
-        if (wuxing === '木') counts.Wood++;
-        else if (wuxing === '火') counts.Fire++;
-        else if (wuxing === '土') counts.Earth++;
-        else if (wuxing === '金') counts.Metal++;
-        else if (wuxing === '水') counts.Water++;
+        if (element && counts[element] !== undefined) {
+            counts[element]++;
+        }
     });
 
     return counts;
