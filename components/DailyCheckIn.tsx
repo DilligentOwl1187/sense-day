@@ -86,7 +86,7 @@ export default function DailyCheckIn() {
 
     // Shared Header Component
     const CheckInHeader = () => (
-        <div className="absolute top-0 left-0 w-full flex flex-col items-center pt-24 z-20 pointer-events-none">
+        <div className="w-full flex flex-col items-center pt-20 pb-10 z-20 pointer-events-none flex-shrink-0">
             <h1 className="text-[#E07A5F] text-xs font-bold tracking-[0.2em] mb-3">SENSE YOUR DAY</h1>
             <h2 className="text-[#2A2A2A] text-2xl md:text-3xl font-bold text-center leading-tight tracking-tight">
                 당신의 우주가 보내는<br />
@@ -105,17 +105,17 @@ export default function DailyCheckIn() {
             </div>
 
             {/* Top Right Orange Circle - Correct Color #E07A5F */}
-            <div className="absolute top-20 right-6 w-12 h-12 bg-[#E07A5F] rounded-full pointer-events-none mix-blend-multiply opacity-90" />
+            <div className="absolute top-16 right-6 w-12 h-12 bg-[#E07A5F] rounded-full pointer-events-none mix-blend-multiply opacity-90" />
 
             <div className="relative w-full max-w-[420px] min-h-[600px] flex flex-col items-center">
                 {/* Persistent Header */}
                 <CheckInHeader />
 
-                <div className="flex-1 w-full flex flex-col justify-center mt-32 z-10">
+                <div className="flex-1 w-full flex flex-col justify-start items-center z-10 min-h-[300px]">
                     <AnimatePresence mode="wait">
                         {/* Intro Step */}
                         {step === "intro" && (
-                            <motion.div key="intro" {...fadeInUp} className="w-full flex flex-col items-center text-center space-y-20">
+                            <motion.div key="intro" {...fadeInUp} className="w-full flex flex-col items-center text-center space-y-16 py-4">
                                 <p className="text-[#2A2A2A] text-sm md:text-base leading-loose whitespace-pre-line mt-4 font-medium">
                                     당신의 탄생 정보와 오늘의 감각을 연결하여,<br />
                                     하루의 위로와 한 조각의 예술을 처방합니다.
