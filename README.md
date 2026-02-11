@@ -62,6 +62,14 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key
 npm run dev
 ```
 
+### Deployment (Vercel)
+This project is optimized for deployment on [Vercel](https://vercel.com/new).
+
+1. Clone this repository.
+2. Import the project into Vercel.
+3. Add the **Environment Variables** listed above in the Vercel Dashboard.
+4. Click **Deploy**.
+
 ## 📂 Project Structure
 ```
 src/

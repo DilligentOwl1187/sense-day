@@ -101,137 +101,149 @@ export default function DailyCheckIn() {
 
     // Helper for input animation
     const fadeInUp = {
-        initial: { opacity: 0, y: 20 },
+        initial: { opacity: 0, y: 10 },
         animate: { opacity: 1, y: 0 },
-        exit: { opacity: 0, y: -20 }
+        exit: { opacity: 0, y: -10 },
+        transition: { duration: 0.6, ease: "easeOut" }
     };
 
     return (
-        <div className="w-full h-full flex flex-col items-center justify-center p-4 min-h-[70vh]">
+        <div className="w-full h-full flex flex-col items-center justify-center min-h-[300px]">
             <AnimatePresence mode="wait">
 
-                {/* Intro Step */}
+                {/* Intro Step - Replaced by Landing Page Copy, jumping straight to action if needed, 
+                    but keeping 'start' button for flow */}
                 {step === "intro" && (
-                    <motion.div key="intro" {...fadeInUp} className="text-center space-y-8 max-w-lg">
-                        <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                            className="w-16 h-16 border-2 border-indigo-500/30 border-t-indigo-400 rounded-full mx-auto"
-                        />
-                        <h2 className="text-3xl font-light text-slate-200">
-                            당신의 <span className="text-indigo-400 font-serif">우주</span>를 읽어드립니다.
-                        </h2>
-                        <p className="text-slate-400 leading-relaxed font-light">
-                            Sense Your Day는 당신의 탄생 정보와 오늘의 마음을 연결하여<br />
-                            가장 사적인 위로와 예술적 처방을 건넸습니다.
-                        </p>
-                        <button onClick={handleNext} className="group relative inline-flex items-center justify-center px-8 py-3 text-sm font-medium text-white transition-all bg-indigo-600 rounded-full hover:bg-indigo-500 hover:scale-105 shadow-lg shadow-indigo-500/20">
-                            시작하기
-                            <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    <motion.div key="intro" {...fadeInUp} className="text-center space-y-8">
+                        {/* Geometric Line Element */}
+                        <div className="flex justify-center items-center space-x-2 opacity-60">
+                            <div className="w-12 h-px bg-[#E07A5F]"></div>
+                            <div className="w-1 h-1 rounded-full bg-[#E07A5F]"></div>
+                            <div className="w-12 h-px bg-[#E07A5F]"></div>
+                        </div>
+
+                        <button
+                            onClick={handleNext}
+                            className="group relative inline-flex items-center justify-center px-10 py-4 text-sm font-serif text-[#2A2A2A] transition-all bg-[#F2EEE6] border border-[#C8BEB4] hover:border-[#E07A5F] hover:text-[#E07A5F]"
+                        >
+                            <span className="tracking-widest mr-2">기록 시작하기</span>
+                            <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                         </button>
                     </motion.div>
                 )}
 
                 {/* Name Step */}
                 {step === "name" && (
-                    <motion.div key="name" {...fadeInUp} className="w-full max-w-md space-y-6">
-                        <h3 className="text-xl text-slate-300 font-light text-center">어떻게 불러드릴까요?</h3>
-                        <input
-                            type="text"
-                            value={profile.name}
-                            onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-                            placeholder="이름 또는 닉네임"
-                            className="w-full p-4 text-center text-xl bg-transparent border-b-2 border-slate-700 focus:border-indigo-500 outline-none transition-colors placeholder:text-slate-600 text-white"
-                            autoFocus
-                            onKeyDown={(e) => e.key === 'Enter' && handleNext()}
-                        />
-                        <button onClick={handleNext} disabled={!profile.name} className="w-full py-4 text-slate-400 hover:text-white disabled:opacity-0 transition-all">
-                            다음으로 <ChevronRight className="inline w-4 h-4" />
+                    <motion.div key="name" {...fadeInUp} className="w-full max-w-[320px] space-y-10">
+                        <h3 className="text-2xl font-serif text-[#2A2A2A] text-center leading-relaxed">
+                            당신을<br />무엇이라 부르면 좋을까요?
+                        </h3>
+                        <div className="relative group">
+                            <input
+                                type="text"
+                                value={profile.name}
+                                onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+                                placeholder="이름"
+                                className="w-full py-3 text-center text-xl font-serif bg-transparent border-b border-[#C8BEB4] focus:border-[#E07A5F] outline-none transition-colors placeholder:text-[#C8BEB4] text-[#2A2A2A]"
+                                autoFocus
+                                onKeyDown={(e) => e.key === 'Enter' && handleNext()}
+                            />
+                            {/* Geometric Accent Line */}
+                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-[#E07A5F] transition-all duration-500 group-focus-within:w-full"></div>
+                        </div>
+                        <button onClick={handleNext} disabled={!profile.name} className="w-full py-4 text-[#C8BEB4] hover:text-[#E07A5F] disabled:opacity-0 transition-all font-serif text-sm">
+                            다음 <ChevronRight className="inline w-3 h-3 ml-1" />
                         </button>
                     </motion.div>
                 )}
 
                 {/* Birth Info Step */}
                 {step === "birth" && (
-                    <motion.div key="birth" {...fadeInUp} className="w-full max-w-md space-y-8">
+                    <motion.div key="birth" {...fadeInUp} className="w-full max-w-[320px] space-y-10">
                         <div className="text-center space-y-2">
-                            <h3 className="text-xl text-slate-300 font-light">당신이 세상에 도착한 시간</h3>
-                            <p className="text-xs text-slate-500">별들의 배치를 읽기 위해 필요합니다.</p>
+                            <h3 className="text-2xl font-serif text-[#2A2A2A] leading-relaxed">
+                                당신이 세상에<br />도착한 시간
+                            </h3>
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="space-y-6">
                             <div className="relative">
-                                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
                                 <input
                                     type="date"
                                     value={profile.birthDate}
                                     onChange={(e) => setProfile({ ...profile, birthDate: e.target.value })}
-                                    className="w-full p-4 pl-12 bg-slate-800/50 rounded-xl border border-slate-700 focus:border-indigo-500 outline-none text-white appearance-none"
+                                    className="w-full py-3 text-center text-lg font-serif bg-transparent border-b border-[#C8BEB4] focus:border-[#E07A5F] outline-none text-[#2A2A2A]"
                                 />
                             </div>
                             <div className="relative">
-                                <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
                                 <input
                                     type="time"
                                     value={profile.birthTime}
                                     onChange={(e) => setProfile({ ...profile, birthTime: e.target.value })}
-                                    className="w-full p-4 pl-12 bg-slate-800/50 rounded-xl border border-slate-700 focus:border-indigo-500 outline-none text-white appearance-none"
+                                    className="w-full py-3 text-center text-lg font-serif bg-transparent border-b border-[#C8BEB4] focus:border-[#E07A5F] outline-none text-[#2A2A2A]"
                                 />
                             </div>
                         </div>
-                        <button onClick={handleNext} disabled={!profile.birthDate} className="w-full py-4 text-slate-400 hover:text-white disabled:opacity-0 transition-all">
-                            다음으로 <ChevronRight className="inline w-4 h-4" />
+                        <button onClick={handleNext} disabled={!profile.birthDate} className="w-full py-4 text-[#C8BEB4] hover:text-[#E07A5F] disabled:opacity-0 transition-all font-serif text-sm">
+                            다음 <ChevronRight className="inline w-3 h-3 ml-1" />
                         </button>
                     </motion.div>
                 )}
 
                 {/* City Step */}
                 {step === "city" && (
-                    <motion.div key="city" {...fadeInUp} className="w-full max-w-md space-y-6">
-                        <h3 className="text-xl text-slate-300 font-light text-center">태어난 도시</h3>
-                        <div className="relative">
-                            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                    <motion.div key="city" {...fadeInUp} className="w-full max-w-[320px] space-y-10">
+                        <h3 className="text-2xl font-serif text-[#2A2A2A] text-center leading-relaxed">
+                            태어난 도시
+                        </h3>
+                        <div className="relative group">
                             <input
                                 type="text"
                                 value={profile.birthCity}
                                 onChange={(e) => setProfile({ ...profile, birthCity: e.target.value })}
-                                placeholder="예: 서울, 부산, 뉴욕"
-                                className="w-full p-4 pl-12 text-lg bg-slate-800/50 rounded-xl border border-slate-700 focus:border-indigo-500 outline-none text-white"
+                                placeholder="예: 서울"
+                                className="w-full py-3 text-center text-xl font-serif bg-transparent border-b border-[#C8BEB4] focus:border-[#E07A5F] outline-none transition-colors placeholder:text-[#C8BEB4] text-[#2A2A2A]"
                                 autoFocus
                                 onKeyDown={(e) => e.key === 'Enter' && handleNext()}
                             />
+                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-[#E07A5F] transition-all duration-500 group-focus-within:w-full"></div>
                         </div>
-                        <button onClick={handleNext} disabled={!profile.birthCity} className="w-full py-4 text-slate-400 hover:text-white disabled:opacity-0 transition-all">
-                            다음으로 <ChevronRight className="inline w-4 h-4" />
+                        <button onClick={handleNext} disabled={!profile.birthCity} className="w-full py-4 text-[#C8BEB4] hover:text-[#E07A5F] disabled:opacity-0 transition-all font-serif text-sm">
+                            다음 <ChevronRight className="inline w-3 h-3 ml-1" />
                         </button>
                     </motion.div>
                 )}
 
                 {/* Feeling Step (Final Input) */}
                 {step === "feeling" && (
-                    <motion.div key="feeling" {...fadeInUp} className="w-full max-w-2xl text-center space-y-8">
-                        <div className="space-y-2">
-                            <h2 className="text-3xl font-light text-slate-200">
-                                {profile.name}님, 오늘 하루는 어땠나요?
+                    <motion.div key="feeling" {...fadeInUp} className="w-full max-w-[400px] text-center space-y-10">
+                        <div className="space-y-4">
+                            <h2 className="text-2xl font-serif text-[#2A2A2A] leading-relaxed">
+                                <span className="text-[#E07A5F]">{profile.name}</span>님,<br />오늘의 파도는 어땠나요?
                             </h2>
-                            <p className="text-slate-500 text-sm">사소한 감정도, 깊은 고민도 좋아요.</p>
+                            <p className="text-xs text-[#3C3C3C]/60 font-sans tracking-wide">사소한 감정도, 깊은 고민도 좋습니다.</p>
                         </div>
-                        <form onSubmit={handleSubmit} className="relative">
+
+                        <form onSubmit={handleSubmit} className="relative w-full">
                             <input
                                 type="text"
                                 value={profile.feeling}
                                 onChange={(e) => setProfile({ ...profile, feeling: e.target.value })}
-                                placeholder="당신의 이야기를 들려주세요..."
-                                className="w-full p-6 pr-16 text-lg rounded-2xl bg-slate-900/50 backdrop-blur-md border border-slate-800 focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none placeholder:text-slate-600 shadow-xl"
+                                placeholder="이야기를 적어주세요..."
+                                className="w-full py-4 px-2 text-lg font-serif bg-transparent border-b border-[#C8BEB4] focus:border-[#E07A5F] outline-none transition-colors placeholder:text-[#C8BEB4] text-[#2A2A2A] text-center"
                                 autoFocus
                             />
-                            <button
-                                type="submit"
-                                disabled={!profile.feeling.trim()}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 p-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                            >
-                                <Send className="w-5 h-5" />
-                            </button>
+
+                            <div className="mt-8">
+                                <button
+                                    type="submit"
+                                    disabled={!profile.feeling.trim()}
+                                    className="group relative inline-flex items-center justify-center px-8 py-3 text-sm font-serif text-[#2A2A2A] transition-all disabled:opacity-0 hover:text-[#E07A5F]"
+                                >
+                                    <span className="tracking-widest mr-2">기록 남기기</span>
+                                    <Send className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                                </button>
+                            </div>
                         </form>
                     </motion.div>
                 )}
@@ -242,16 +254,28 @@ export default function DailyCheckIn() {
                         key="loading"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="w-full flex flex-col items-center"
+                        className="w-full flex flex-col items-center space-y-8"
                     >
+                        <div className="flex flex-col items-center space-y-4">
+                            <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                                className="w-12 h-12 border border-[#C8BEB4] border-t-[#E07A5F] rounded-full"
+                            />
+                            <p className="text-sm font-serif text-[#3C3C3C] tracking-widest animate-pulse">
+                                별들의 문장을 해석하는 중...
+                            </p>
+                        </div>
+
                         <motion.div
                             layoutId="user-input"
-                            className="mb-8 p-4 bg-slate-800/30 rounded-xl border border-slate-700/30 text-slate-300 max-w-2xl text-center w-full"
+                            className="p-6 bg-[#F2EEE6] border border-[#C8BEB4] text-[#2A2A2A] max-w-sm text-center w-full font-serif text-sm leading-relaxed"
                         >
-                            <span className="text-slate-500 text-xs block mb-1">{profile.name}님의 기록</span>
+                            <div className="mb-4 flex justify-center">
+                                <Sparkles className="w-4 h-4 text-[#E07A5F]" />
+                            </div>
                             "{profile.feeling}"
                         </motion.div>
-                        <ResultCardSkeleton />
                     </motion.div>
                 )}
             </AnimatePresence>

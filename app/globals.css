@@ -3,28 +3,18 @@
 @tailwind utilities;
 
 :root {
-  --background: 2 6 23;
-  /* slate-950 */
-  --foreground: 226 232 240;
-  /* slate-200 */
+  /* Warm Oatmeal Theme */
+  --background: 250 248 245; /* #FAF8F5 */
+  --foreground: 42 42 42;    /* #2A2A2A */
 
-  /* Emotional Palette (Muted Tones) */
-  --muted-terracotta: 224 122 95;
-  /* #E07A5F */
-  --muted-mustard: 242 204 143;
-  /* #F2CC8F */
-  --muted-sage: 129 178 154;
-  /* #81B29A */
-  --muted-slate: 61 90 128;
-  /* #3D5A80 */
-  --muted-cyan: 168 218 220;
-  /* #A8DADC */
+  /* Emotional Palette (Minumsa Style) */
+  --muted-terracotta: 224 122 95;  /* #E07A5F (Point Color) */
+  --muted-paper: 242 238 230;      /* #F2EEE6 (Card Bg) */
+  --muted-ink: 60 60 60;           /* #3C3C3C (Text Muted) */
+  --muted-line: 200 190 180;       /* #C8BEB4 (Lines) */
 
-  /* Cards etc */
-  --card-bg: 15 23 42;
-  /* slate-900 */
-  --card-border: 61 90 128;
-  /* muted-slate equivalent */
+  /* Fonts */
+  --font-serif: var(--font-nanum-myeongjo);
 }
 
 body {

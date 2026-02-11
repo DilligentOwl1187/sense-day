@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Nanum_Myeongjo } from "next/font/google"; // Import Nanum Myeongjo
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 
@@ -13,6 +13,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const nanumMyeongjo = Nanum_Myeongjo({
+  weight: ["400", "700", "800"],
+  subsets: ["latin"],
+  variable: "--font-nanum-myeongjo",
+});
+
 export const metadata: Metadata = {
   title: "Sense Your Day",
   description: "Your emotional companion for a better day.",
@@ -24,9 +30,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="km" className="dark">
+    <html lang="km">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-950 text-slate-200 selection:bg-indigo-500/30`}
+        className={`${geistSans.variable} ${geistMono.variable} ${nanumMyeongjo.variable} antialiased bg-[#FAF8F5] text-[#2A2A2A] selection:bg-[#E07A5F]/20`}
       >
         <Providers>
           <div className="fixed inset-0 z-[-1]" style={{
