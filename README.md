@@ -92,6 +92,8 @@ src/
 ## 🗺 Roadmap
 - [x] Phase 1: Project Vision & Sacred Input UI 
 - [x] Phase 2: AI Interactive Check-in & Persona 
+- [x] **Milestone**: UI/UX Redesign - Minumsa Style & Nanum Myeongjo
+- [x] **Milestone**: Deployment Migration to Vercel
 - [ ] Phase 3: Hybrid Analysis Engine (Saju + Astrology) <!-- In Progress --> 
 - [ ] Phase 4: Total Arts Remedy Curation System 
 - [ ] Phase 5: SBT Minting & Web3 Data Sovereignty 
