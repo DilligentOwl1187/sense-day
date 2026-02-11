@@ -142,20 +142,21 @@ export default function DailyCheckIn() {
 
                 {/* Birth Info Step: Segmented Input */}
                 {step === "birth" && (
-                    <motion.div key="birth" {...fadeInUp} className="w-full max-w-[320px] space-y-10">
-                        <div className="text-center space-y-2">
+                    <motion.div key="birth" {...fadeInUp} className="w-full max-w-[360px] flex flex-col items-center" style={{ minHeight: '400px' }}>
+                        <div className="text-center mb-10">
                             <h3 className="text-2xl font-serif text-[#2A2A2A] leading-relaxed">
                                 당신이 세상에<br />도착한 시간
                             </h3>
                         </div>
 
-                        <div className="space-y-8">
-                            {/* Date Segments */}
-                            <div className="flex justify-center items-end space-x-2 font-serif text-xl text-[#2A2A2A]">
+                        <div className="w-full space-y-10 flex-1 flex flex-col justify-center">
+                            {/* Date Inputs Row */}
+                            <div className="flex justify-center items-end gap-4 text-xl font-serif text-[#2A2A2A]">
                                 <input
                                     type="text"
                                     placeholder="YYYY"
                                     maxLength={4}
+                                    inputMode="numeric"
                                     value={profile.birthDate.split('-')[0] || ''}
                                     onChange={(e) => {
                                         const val = e.target.value.replace(/\D/g, '');
@@ -164,15 +165,16 @@ export default function DailyCheckIn() {
                                         setProfile({ ...profile, birthDate: newDate });
                                         if (val.length === 4) document.getElementById('month-input')?.focus();
                                     }}
-                                    className="w-16 py-2 text-center bg-transparent border-b border-[#C8BEB4] focus:border-[#2A2A2A] outline-none placeholder:text-[#C8BEB4]/50 transition-colors"
+                                    className="w-20 py-3 text-center bg-transparent border-b border-[#C8BEB4] focus:border-[#2A2A2A] outline-none placeholder:text-[#C8BEB4]/50 transition-colors"
                                 />
-                                <span className="text-[#C8BEB4] pb-2">.</span>
+                                <span className="text-[#C8BEB4] pb-3">.</span>
 
                                 <input
                                     id="month-input"
                                     type="text"
                                     placeholder="MM"
                                     maxLength={2}
+                                    inputMode="numeric"
                                     value={profile.birthDate.split('-')[1] || ''}
                                     onChange={(e) => {
                                         const val = e.target.value.replace(/\D/g, '');
@@ -181,15 +183,16 @@ export default function DailyCheckIn() {
                                         setProfile({ ...profile, birthDate: newDate });
                                         if (val.length === 2) document.getElementById('day-input')?.focus();
                                     }}
-                                    className="w-10 py-2 text-center bg-transparent border-b border-[#C8BEB4] focus:border-[#2A2A2A] outline-none placeholder:text-[#C8BEB4]/50 transition-colors"
+                                    className="w-14 py-3 text-center bg-transparent border-b border-[#C8BEB4] focus:border-[#2A2A2A] outline-none placeholder:text-[#C8BEB4]/50 transition-colors"
                                 />
-                                <span className="text-[#C8BEB4] pb-2">.</span>
+                                <span className="text-[#C8BEB4] pb-3">.</span>
 
                                 <input
                                     id="day-input"
                                     type="text"
                                     placeholder="DD"
                                     maxLength={2}
+                                    inputMode="numeric"
                                     value={profile.birthDate.split('-')[2] || ''}
                                     onChange={(e) => {
                                         const val = e.target.value.replace(/\D/g, '');
@@ -198,18 +201,19 @@ export default function DailyCheckIn() {
                                         setProfile({ ...profile, birthDate: newDate });
                                         if (val.length === 2 && !profile.birthTimeUnknown) document.getElementById('hour-input')?.focus();
                                     }}
-                                    className="w-10 py-2 text-center bg-transparent border-b border-[#C8BEB4] focus:border-[#2A2A2A] outline-none placeholder:text-[#C8BEB4]/50 transition-colors"
+                                    className="w-14 py-3 text-center bg-transparent border-b border-[#C8BEB4] focus:border-[#2A2A2A] outline-none placeholder:text-[#C8BEB4]/50 transition-colors"
                                 />
                             </div>
 
-                            {/* Time Segments & Unknown Toggle */}
-                            <div className="relative flex flex-col items-center space-y-4">
-                                <div className={`flex justify-center items-end space-x-2 font-serif text-xl text-[#2A2A2A] transition-all duration-500 relative ${profile.birthTimeUnknown ? 'opacity-30 blur-[0.5px] pointer-events-none select-none' : 'opacity-100'}`}>
+                            {/* Time Inputs Row */}
+                            <div className="flex flex-col items-center space-y-6">
+                                <div className={`flex justify-center items-end gap-4 text-xl font-serif text-[#2A2A2A] transition-all duration-300 relative ${profile.birthTimeUnknown ? 'opacity-30 blur-[0.5px] pointer-events-none' : 'opacity-100'}`}>
                                     <input
                                         id="hour-input"
                                         type="text"
                                         placeholder="HH"
                                         maxLength={2}
+                                        inputMode="numeric"
                                         value={profile.birthTime.split(':')[0] || ''}
                                         onChange={(e) => {
                                             const val = e.target.value.replace(/\D/g, '');
@@ -218,40 +222,43 @@ export default function DailyCheckIn() {
                                             setProfile({ ...profile, birthTime: newTime });
                                             if (val.length === 2) document.getElementById('minute-input')?.focus();
                                         }}
-                                        className="w-10 py-2 text-center bg-transparent border-b border-[#C8BEB4] focus:border-[#2A2A2A] outline-none placeholder:text-[#C8BEB4]/50 transition-colors"
+                                        className="w-14 py-3 text-center bg-transparent border-b border-[#C8BEB4] focus:border-[#2A2A2A] outline-none placeholder:text-[#C8BEB4]/50 transition-colors"
                                         disabled={profile.birthTimeUnknown}
                                     />
-                                    <span className="text-[#C8BEB4] pb-2">:</span>
+                                    <span className="text-[#C8BEB4] pb-3">:</span>
                                     <input
                                         id="minute-input"
                                         type="text"
                                         placeholder="MM"
                                         maxLength={2}
+                                        inputMode="numeric"
                                         value={profile.birthTime.split(':')[1] || ''}
                                         onChange={(e) => {
                                             const val = e.target.value.replace(/\D/g, '');
                                             const parts = profile.birthTime.split(':');
                                             const newTime = `${parts[0] || ''}:${val}`;
                                             setProfile({ ...profile, birthTime: newTime });
-                                            if (val.length === 2) handleNext(); // Use Enter or click next manually
+                                            if (val.length === 2) handleNext();
                                         }}
-                                        className="w-10 py-2 text-center bg-transparent border-b border-[#C8BEB4] focus:border-[#2A2A2A] outline-none placeholder:text-[#C8BEB4]/50 transition-colors"
+                                        className="w-14 py-3 text-center bg-transparent border-b border-[#C8BEB4] focus:border-[#2A2A2A] outline-none placeholder:text-[#C8BEB4]/50 transition-colors"
                                         disabled={profile.birthTimeUnknown}
                                     />
 
-                                    {/* Geometric Strikethrough Line (Only visible when unknown) */}
-                                    <div className={`absolute top-1/2 left-0 w-full h-px bg-[#C8BEB4] transition-transform duration-500 origin-left ${profile.birthTimeUnknown ? 'scale-x-100' : 'scale-x-0'}`}></div>
+                                    {/* Geometric Strikethrough (Absolute) */}
+                                    <div className={`absolute top-1/2 left-0 w-full h-px bg-[#C8BEB4] transition-all duration-500 origin-left ${profile.birthTimeUnknown ? 'scale-x-110 opacity-100' : 'scale-x-0 opacity-0'}`} />
                                 </div>
 
-                                {/* Unknown Checkbox */}
-                                <label className="flex items-center space-x-2 cursor-pointer group">
+                                {/* Unknown Checkbox (Distinctly separated) */}
+                                <label className="flex items-center gap-2 cursor-pointer group mt-4">
+                                    <div className={`w-4 h-4 border border-[#C8BEB4] flex items-center justify-center transition-colors ${profile.birthTimeUnknown ? 'bg-[#C8BEB4]' : 'bg-transparent group-hover:border-[#E07A5F]'}`}>
+                                        {profile.birthTimeUnknown && <div className="w-2 h-2 bg-white" />}
+                                    </div>
                                     <input
                                         type="checkbox"
                                         checked={profile.birthTimeUnknown || false}
                                         onChange={(e) => setProfile({ ...profile, birthTimeUnknown: e.target.checked })}
                                         className="hidden"
                                     />
-                                    <div className={`w-3 h-3 border border-[#C8BEB4] transition-colors ${profile.birthTimeUnknown ? 'bg-[#C8BEB4]' : 'bg-transparent group-hover:border-[#E07A5F]'}`}></div>
                                     <span className={`text-xs font-serif tracking-widest transition-colors ${profile.birthTimeUnknown ? 'text-[#C8BEB4]' : 'text-[#C8BEB4] group-hover:text-[#E07A5F]'}`}>
                                         시간을 모릅니다
                                     </span>
@@ -259,13 +266,16 @@ export default function DailyCheckIn() {
                             </div>
                         </div>
 
-                        <button
-                            onClick={handleNext}
-                            disabled={!profile.birthDate || (!profile.birthTime && !profile.birthTimeUnknown)}
-                            className="w-full py-4 text-[#C8BEB4] hover:text-[#E07A5F] disabled:opacity-0 transition-all font-serif text-sm"
-                        >
-                            다음 <ChevronRight className="inline w-3 h-3 ml-1" />
-                        </button>
+                        {/* Next Button (Fixed at bottom of container) */}
+                        <div className="w-full mt-10">
+                            <button
+                                onClick={handleNext}
+                                disabled={!profile.birthDate || (!profile.birthTime && !profile.birthTimeUnknown)}
+                                className="w-full py-4 text-[#C8BEB4] hover:text-[#E07A5F] disabled:opacity-0 transition-all font-serif text-sm border border-transparent hover:border-[#E07A5F]/20 rounded-sm"
+                            >
+                                다음 <ChevronRight className="inline w-3 h-3 ml-1" />
+                            </button>
+                        </div>
                     </motion.div>
                 )}
 
