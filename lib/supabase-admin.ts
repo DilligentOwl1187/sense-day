@@ -22,7 +22,7 @@ export const supabaseAdmin = isBuildTime || !supabaseUrl || !supabaseServiceRole
     ? {
         from: () => ({
             select: () => ({ single: () => ({ data: {}, error: null }) }),
-            insert: () => ({ select: () => ({ single: () => ({ data: { id: 0 }, error: null }) }) }),
+            insert: () => ({ select: () => ({ single: () => ({ data: { id: "dev-mock-uuid" }, error: null }) }) }),
             update: () => ({ eq: () => ({ error: null }) })
         })
     } as any

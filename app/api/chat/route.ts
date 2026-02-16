@@ -68,13 +68,15 @@ export async function POST(req: Request) {
                 .single();
 
             if (error) throw error;
+            console.log("DB_INSERT_SUCCESS: New result ID:", data.id);
             insertedId = data.id;
 
-        } catch (dbError) {
-            console.error("DB Save failed", dbError);
-            // We might still want to return the result even if save fails, 
-            // but for this app flow, the result page depends on the DB ID.
-            // We will return the result, but client might not be able to redirect.
+        } catch (dbError: any) {
+            console.error("**DB_INSERT_ERROR** Details:", {
+                message: dbError.message,
+                status: dbError.status,
+                code: dbError.code
+            });
         }
 
         return NextResponse.json({
