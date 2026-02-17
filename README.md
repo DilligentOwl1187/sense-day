@@ -7,16 +7,6 @@
 * 범람하는 정보와 소음의 시대 속에서, 현대인들은 정작 '가장 사적인 자신'을 잃어버리곤 합니다. **SENSE YOUR DAY(SYD)** 는 그 소음으로부터 한 걸음 물러나, 당신이 태어난 순간의 우주적 배치를 한 조각의 예술로 처방하는 서비스입니다.
 * 우리는 고전적인 명리학과 서양 점성술의 데이터를 현대적인 AI의 시각으로 재해석했습니다.  이는 단순한 미래 예측이 아닌, 오늘을 견디는 당신에게 건네는 **'감각적인 위로'** 이자 **'문학적인 휴식'** 입니다.
 
----
-
-## 🍃 SnF Ecosystem: The Restoration Journey
-우리는 기술에 침탈당한 인간의 사유를 본래 주인에게 되돌려주는 **'인양(Restoration)'**의 여정을 설계합니다.
-
-* **☁️ Sense Your Day**: 서양의 점성술과 동양의 사주명리학을 결합하여 오늘의 나를 온전히 감각하게 하는 정서적 안식처입니다.
-* **🪞 Double-Mirror**: AI와의 동기화(Sync)와 인간적 이탈(Identity)을 동시 측정하여 자신의 존재가 서있는 위치를 증명합니다.
-* **💎 Prism-Arcana**: 내면의 사유를 빛의 예술인 스테인드글라스로 형상화하여 소유 가능한 실물 자산으로 치환합니다.
-* **🌳 Taste Tree**: 파편화된 개인의 취향을 가드닝하여 전지구적 공동체를 이루는 연결의 여정입니다.
-* **🏰 Deep-Reso**: 밈과 유행어가 깊이를 대체하는 시대에 인간 고유의 사유 밀도를 보호하고 증명하는 최후의 요새입니다.
 
 ---
 ## 🌙 Key Features
@@ -63,7 +53,26 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key #(Server Only)
 *   ✅ **2026-02-11 23:30 | [The Chaos]**: CSS 레이아웃 붕괴 및 입력창 중첩 사태 발생. 픽셀 단위의 긴급 교정 및 UI 복구 완료.
 *   ✅ **2026-02-12 11:00 | [Deployment Hell]**: React 19와 구형 라이브러리 간의 버전 충돌로 인한 Vercel 빌드 실패. --legacy-peer-deps 전략으로 돌파. 
 *   ✅ **2026-02-16 02:00 | [The Final Soul]**: "오늘의 위로를 넘어 삶의 궤적을 보여주자"는 파운더의 지시로 '인생 사계절 그래프' 모듈 전격 추가. 
-*   🚀**2026-02-17 00:00 | [Eternal Identity]**: SBT 각인 시스템 및 SEO 최적화 완료. 전 세계를 향한 '정서적 관문' 최종 개방.
+*  ~~ 🚀**2026-02-17 00:00 | [Eternal Identity]**: SBT 각인 시스템 및 SEO 최적화 완료. 전 세계를 향한 '정서적 관문' 최종 개방.~~
 
 ---
-Developed with 🌙 by **Antigravity Team** for Lotus
+Developed with 🌙 by **Antigravity Team** for Lotus---
+
+## 🍃 SnF Ecosystem: The Restoration Journey
+"10년 차 마케터의 안목과 바이브 코딩이 만든 18일간의 초고속 실행 기록"
+
+### 🚀 Live Projects
+* **🪞 Double-Mirror**: AI와 인간의 이질성을 측정하여 존재의 유일함을 온체인으로 증명하는 Proof of Humanity.
+* **🛡️ Hyper ETF Guardian**: 자산운용 전문가의 실전 전략을 시스템화하여 자본 변동성으로부터 일상의 평온을 지키는 방어 프로토콜.
+
+### 🛠️ Challenges & Pivots
+* **🏰 Deep-Reso**: 밈의 시대를 넘어 인간 고유의 사유 밀도를 보존하는 PoDR(사유 증명) 엔진 R&D.
+* **💎 Prism-Arcana**: 내면의 사유를 시각화하여 NFT/RWA로 치환하는 실물 자산 기반 크리에이터 이코노미 실험.
+* **🌳 Taste Tree**: 파편화된 개인의 취향을 가드닝하여 글로벌 공동체로 연결하는 온체인 거버넌스 설계.
+* **☁️ Sense Your Day (Pivoted)**: 핵심 가치 집중을 위해 배포 초기 단계에서 Double-Mirror로 리소스 과감히 통합.
+
+### ⚡ Why SnF?
+- **초고속 실행력**: 밋업 참석 후 단 18일 만에 생태계 설계 및 2개의 라이브 서비스 배포 완료.
+- **Mass Adoption**: 철학·금융·예술의 층위에서 대중을 블록체인 생태계로 연결하는 탈중앙화 가속화.
+- **도메인 통찰**: 10년 마케팅 실무 노하우를 바이브 코딩으로 즉시 시스템화하는 변태적 디테일.
+
